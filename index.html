@@ -14,6 +14,7 @@
       body { width: 100%; height: 100%; padding: 60px 10px 10px 10px; }
       .navbar-fixed-top { margin: 0; }
       .clock { width: 100%; height: 100%; }
+      body > .container { height: 100%; padding: 0; }
     </style>
     
     <!--[if lt IE 9]>
@@ -41,7 +42,9 @@
       </div>
     </nav>
     
-    <canvas class="clock"></canvas>
+    <div class="container">
+        <canvas class="clock"></canvas>
+    </div>
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -66,7 +69,7 @@
         centerY = canvas.height / 2;
         
         radius = (( centerX < centerY ) ? centerX : centerY );
-	radius *= 0.90
+	radius *= 0.9;
         
         tickHourLen = radius * 0.225;
         tickHourWidth = radius * 0.08;
