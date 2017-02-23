@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Innotronic Ingenieurbüro GmbH</title>
+    
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <style>
+      html { width: 100%; height: 100%; }
+      body { width: 100%; height: 100%; padding: 60px 10px 10px 10px; }
+      .navbar-fixed-top { margin: 0; }
+      .clock { width: 100%; height: 100%; }
+    </style>
+    
+    <!--[if lt IE 9]>
+      <script src="//oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+  
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Innotronic Ingenieurbüro GmbH</a>
+        </div>
+	<!-- 
+        <ul class="nav navbar-nav">
+	  <li><a href="https://app.inno.ch/kasse">Kasse</a>
+	  <li><a href="https://app.inno.ch//jury">Jury</a>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
+	-->
+      </div>
+    </nav>
+    
+    <canvas class="clock"></canvas>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <script>
+      $( function () { 
+        $( window ).resize( draw );
+        setInterval( draw, 100 );
+        draw();
+      });
+      
+      function draw()
+      {
+        canvas = $( '.clock' )[0];
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        context = canvas.getContext( '2d' );
+        
+        context.clearRect( 0, 0, canvas.width, canvas.height );
+        
+        centerX = canvas.width / 2;
+        centerY = canvas.height / 2;
+        
+        radius = (( centerX < centerY ) ? centerX : centerY );
+	radius *= 0.90
+        
+        tickHourLen = radius * 0.225;
+        tickHourWidth = radius * 0.08;
+        tickMinuteLen = radius * 0.10;
+        tickMinuteWidth = radius * 0.02;
+        
+        handSecondLen = radius * 0.65;
+        handSecondWidth = radius * 0.025;
+        handSecondColor = 'red';
+        handSecondRadius = radius * 0.075;
+        
+        handMinuteLen = radius * 0.90;
+        handMinuteWidth = radius * 0.08;
+        handMinuteColor = 'black';
+        
+        handHourLen = radius * 0.60;
+        handHourWdith = radius * 0.08;
+        handHourColor = 'black';
+        
+        centerWidth = radius * 0.025;
+        centerColor = 'red';
+        
+        now = new Date();
+        hrs = now.getHours();
+        min = now.getMinutes();
+        sec = Math.min(( now.getSeconds() + now.getMilliseconds() / 1000 ) * 1.03, 60 );
+        
+        context.strokeStyle = 'black';
+        context.translate( centerX, centerY );
+        
+        for( var i = 1; i <= 60; i++ )
+        {
+          angle = Math.PI / 30 * i;
+          sineAngle = Math.sin( angle );
+          cosAngle = -Math.cos( angle );
+          
+          if( i % 5 )
+          {
+            //Minute Ticks
+            context.lineWidth = tickMinuteWidth;      
+            iPointX = sineAngle * ( radius - tickMinuteLen );
+            iPointY = cosAngle  * ( radius - tickMinuteLen );
+            oPointX = sineAngle * ( radius );
+            oPointY = cosAngle  * ( radius );
+          }
+          else
+          {
+            //Hour Ticks
+            context.lineWidth = tickHourWidth;
+            iPointX = sineAngle * ( radius - tickHourLen );
+            iPointY = cosAngle  * ( radius - tickHourLen );
+            oPointX = sineAngle * ( radius );
+            oPointY = cosAngle  * ( radius );
+          }
+          
+          context.beginPath();
+          context.moveTo( iPointX, iPointY );
+          context.lineTo( oPointX, oPointY );
+          context.stroke();
+        }
+        
+        
+        // Hours
+        sangle = ( Math.PI / 6 * ( hrs + ( min / 60 )));
+        sX =  Math.sin( sangle ) * handHourLen;
+        sY = -Math.cos( sangle ) * handHourLen;
+	    eX = -Math.sin( sangle ) * handHourLen * 0.50;
+	    eY =  Math.cos( sangle ) * handHourLen * 0.50;
+        context.strokeStyle = handHourColor;
+        context.beginPath();
+        context.lineWidth = handHourWdith; 
+        context.moveTo( eX, eY );
+        context.lineTo( sX, sY );
+        context.stroke();
+        
+        // Minutes
+        sangle = ( Math.PI / 30 * min );
+        sX =  Math.sin( sangle ) * handMinuteLen;
+        sY = -Math.cos( sangle ) * handMinuteLen;
+        eX = -Math.sin( sangle ) * handMinuteLen * 0.33;
+        eY =  Math.cos( sangle ) * handMinuteLen * 0.33;
+        context.strokeStyle = handMinuteColor;
+        context.strokeStyle = 'black';
+        context.beginPath();
+        context.lineWidth = handMinuteWidth; 
+        context.moveTo( eX, eY );
+        context.lineTo( sX, sY );
+        context.stroke();
+        
+        // Seconds
+        sangle = Math.PI / 30 * sec;
+        sX =  Math.sin( sangle ) * handSecondLen;
+        sY = -Math.cos( sangle ) * handSecondLen;
+        eX = -Math.sin( sangle ) * handSecondLen * 0.40;
+        eY =  Math.cos( sangle ) * handSecondLen * 0.40;
+        context.strokeStyle = handSecondColor;
+        context.beginPath();
+        context.lineWidth = handSecondWidth; 
+        context.moveTo( eX, eY );
+        context.lineTo( sX, sY );
+        context.stroke();
+        
+        context.fillStyle = handSecondColor;
+        context.beginPath();
+        context.arc( sX, sY, handSecondRadius, 0, 2 * Math.PI, false );
+        context.fill();
+        
+        // Middle point
+        context.beginPath();
+        context.arc( 0, 0, centerWidth, 0, 2 * Math.PI, false );
+        context.fillStyle = centerColor;
+        context.fill();
+        
+        context.restore();
+        context.translate( -centerX, -centerY );
+        
+        setTimeout( draw, 1000 );
+      }
+    </script>
+  </body>
+</html>
