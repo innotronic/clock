@@ -6,7 +6,7 @@ Feedback is much appreciated!
 
 
 ## License
-Copyright (c) 2016 [Innotronic Ingenieurbüro GmbH](https://www.inno.ch/)
+Copyright (c) 2020 [Innotronic Ingenieurbüro GmbH](https://www.inno.ch/)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
