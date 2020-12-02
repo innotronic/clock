@@ -1,4 +1,4 @@
-# Clock.app
+# Clock
 
 Shows an analog clock. No more and no less ;-)
 
